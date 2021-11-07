@@ -19,11 +19,19 @@ class Product:
         return hash((self.name, self.price))
 
 
-
 class TooManyProductsFoundError(Exception):
     # Reprezentuje wyjątek związany ze znalezieniem zbyt dużej liczby produktów.
     pass
 
+
+
+class Server(ABC):
+    def __init__(self):
+        super().__init__()
+
+    @abstractmethod  # tutaj wymuszamy implementację tej metody w klasach pochodnych
+    def nazwa_gatunku(self):
+        pass
 
 # FIXME: Każda z poniższych klas serwerów powinna posiadać:
 #   (1) metodę inicjalizacyjną przyjmującą listę obiektów typu `Product` i ustawiającą atrybut `products` zgodnie z typem reprezentacji produktów na danym serwerze,
@@ -31,37 +39,38 @@ class TooManyProductsFoundError(Exception):
 #   (3) możliwość odwołania się do metody `get_entries(self, n_letters)` zwracającą listę produktów spełniających kryterium wyszukiwania
 
 
-class Server(ABC):
-    pass
+OurServerType = TypeVar('Server', bound=Server)   # HelperType for our serwer
 
 
-class ListServer(Product):
+class ListServer(Server):
     n_max_returned_entries: int = 10
 
     def __init__(self, products: List[Product]) -> None:
-        super().__init__(name, price)
+        super().__init__()
         self.products: List[Product] = products
 
     def get_entries(self, n_letters: int) -> List[Product]:
         return self.products
 
 
-class MapServer:
+class MapServer(Server):
     n_max_returned_entries: int = 10
 
     def __init__(self, products: List[Product]) -> None:
-        super().__init__(name, price)
+        super().__init__()
         d = dict()
         for product in products:
             d[product.name] = product
         self.products: Dict[str, Product] = d
 
     def get_entries(self, n_letters: int) -> List[Product]:
-        return list(self.products)
+        return list(self.products.values())
 
 
 class Client:
     # FIXME: klasa powinna posiadać metodę inicjalizacyjną przyjmującą obiekt reprezentujący serwer
+    def __init__(self, serwer: OurServerType):   ## Czy to jest dobrze?
+        self.serwer: OurServerType = serwer
 
     def get_total_price(self, n_letters: Optional[int]) -> Optional[float]:
         raise NotImplementedError()
