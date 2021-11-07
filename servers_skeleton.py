@@ -2,38 +2,62 @@
 # -*- coding: utf-8 -*-
 
 from typing import Optional
+from abc import ABC, abstractmethod  #interfejsy i klasy
 
 
 class Product:
     def __init__(self, name: str, price: float):
-        self.name = name
-        self.price = price
-
+        self.name: str = name
+        self.price: float = price
+    # DONE
     # FIXME: klasa powinna posiadać metodę inicjalizacyjną przyjmującą argumenty wyrażające nazwę produktu (typu str) i jego cenę (typu float) -- w takiej kolejności -- i ustawiającą atrybuty `name` (typu str) oraz `price` (typu float)
 
     def __eq__(self, other):
-        return self.price == other.price  # FIXME: zwróć odpowiednią wartość
+        return self.name == other.name  # FIXME: zwróć odpowiednią wartość
     
     def __hash__(self):
         return hash((self.name, self.price))
 
 
-class TooManyProductsFoundError:
+
+class TooManyProductsFoundError(Exception):
     # Reprezentuje wyjątek związany ze znalezieniem zbyt dużej liczby produktów.
     pass
 
 
-# FIXME: Każada z poniższych klas serwerów powinna posiadać:
+# FIXME: Każda z poniższych klas serwerów powinna posiadać:
 #   (1) metodę inicjalizacyjną przyjmującą listę obiektów typu `Product` i ustawiającą atrybut `products` zgodnie z typem reprezentacji produktów na danym serwerze,
 #   (2) możliwość odwołania się do atrybutu klasowego `n_max_returned_entries` (typu int) wyrażający maksymalną dopuszczalną liczbę wyników wyszukiwania,
 #   (3) możliwość odwołania się do metody `get_entries(self, n_letters)` zwracającą listę produktów spełniających kryterium wyszukiwania
 
-class ListServer:
+
+class Server(ABC):
     pass
+
+
+class ListServer(Product):
+    n_max_returned_entries: int = 10
+
+    def __init__(self, products: List[Product]) -> None:
+        super().__init__(name, price)
+        self.products: List[Product] = products
+
+    def get_entries(self, n_letters: int) -> List[Product]:
+        return self.products
 
 
 class MapServer:
-    pass
+    n_max_returned_entries: int = 10
+
+    def __init__(self, products: List[Product]) -> None:
+        super().__init__(name, price)
+        d = dict()
+        for product in products:
+            d[product.name] = product
+        self.products: Dict[str, Product] = d
+
+    def get_entries(self, n_letters: int) -> List[Product]:
+        return list(self.products)
 
 
 class Client:
