@@ -24,10 +24,10 @@ class ServerTest(unittest.TestCase):
 
     # Czy przekroczenie maksymalnej liczby znalezionych produktów powoduje rzucenie wyjątku?
     def test_get_entries_raise_too_many_products_exception(self):
-        products = [Product('P12', 1), Product('PP234', 2), Product('PP235', 1)] * Server.n_max_returned_entries
+        products = [Product('P12', 1)] * (Server.n_max_returned_entries + 5)
         server = ListServer(products)
         with self.assertRaises(TooManyProductsFoundError):
-            server.get_entries(2)
+            server.get_entries(1)
 
 
 class ClientTest(unittest.TestCase):
