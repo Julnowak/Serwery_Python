@@ -1,4 +1,4 @@
-Grupa 3b: Huczek < 408378 >, Nowak < 407203 >, Malatyński, <  >
+Grupa 3b: Huczek < 408378 >, Nowak < 407203 >, Malatyński, < 403420 >
 @startuml
 hide empty members
 class Product {
