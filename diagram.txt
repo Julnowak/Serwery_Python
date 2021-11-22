@@ -1,0 +1,54 @@
+Grupa 3b: Huczek (408378), Nowak (407203), Malatyński (...)
+
+@startuml
+hide empty members
+class Product {
+    + __init__(self, name: str, price: float)
+    + name: str
+    + price: float
+    +__eq__(self, other):
+    +__hash__(self):
+}
+
+Product "*" *-- "1" ListServer
+Product "*" *-- "1" MapServer
+
+' ListServer "1" --* "*" Product
+' MapServer "1" --* "*" Product
+
+Product .> ValueError: "<< throws >>"
+
+
+class MapServer {
+    + __init__(self, products: List[Product]) -> None:
+    + products: Dict[str, Product]
+    - _get_entries(self, n_letters: int = 1): List[Product]
+}
+MapServer --|> Server
+
+class ListServer {
+    + __init__(self, products: List[Product]) ->None:
+    + products: List[Product]
+    - _get_entries(self, n_letters: int = 1): List[Product]
+}
+ListServer --|> Server
+
+abstract class Server {
+    + {static} n_max_returned_entries: int
+    + __init__(self)
+    + get_entries(self, n_letters: int)
+    - {abstract} _get_entries(self, n_letters: int = 1):
+}
+
+class Client {
+    + __init__(self, serwer: OurServerType)
+    + serwer: OurServerType
+    + get_total_price(self, n_letters: Optional[int]): Optional[float]
+}
+
+
+
+Server .> TooManyProductsFoundError: "<< throws >>"
+
+Client --o Server
+@enduml
