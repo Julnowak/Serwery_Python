@@ -1,3 +1,4 @@
+# 3b: Nowak (407203), Malatyński (403420), Huczek (408378)
 import unittest
 from collections import Counter
 
@@ -50,3 +51,5 @@ class ClientTest(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+# 3b: Nowak (407203), Malatyński (403420), Huczek (408378)

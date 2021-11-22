@@ -1,5 +1,5 @@
-# 3b: Nowak (407203), Malatyński (...), Huczek (408378)
-#!/usr/bin/python
+# 3b: Nowak (407203), Malatyński (403420), Huczek (408378)
+# !/usr/bin/python
 # -*- coding: utf-8 -*-
 
 from typing import Optional, TypeVar, List, Dict
@@ -21,15 +21,18 @@ class Product:
     #  oraz `price` (typu float)
 
     def __eq__(self, other):
-        return self.name == other.name and self.price == other.price    # FIXME: zwróć odpowiednią wartość
+        return self.name == other.name and self.price == other.price  # FIXME: zwróć odpowiednią wartość
 
     def __hash__(self):
         return hash((self.name, self.price))
 
 
-class TooManyProductsFoundError(Exception):
+class ServerError(Exception):
+    """Ogólna klasa błędów serwera"""
+
+
+class TooManyProductsFoundError(ServerError):
     """Znaleziono zbyt dużą liczbę produktów"""
-    pass
 
 
 class Server(ABC):
@@ -39,19 +42,23 @@ class Server(ABC):
         super().__init__()
 
     def get_entries(self, n_letters: int = 1):
-        lista = []
-        wzor = f'^[a-zA-Z]{{{n_letters}}}\\d{{2,3}}$'
-        for entry in self._get_entries(n_letters):
-            if re.fullmatch(wzor, entry.name):
-                lista.append(entry)
-        if Server.n_max_returned_entries < len(lista):
-            raise TooManyProductsFoundError
+        if n_letters > 0 and isinstance(n_letters, int):
+            lista = []
+            wzor = f'^[a-zA-Z]{{{n_letters}}}\\d{{2,3}}$'
+            for entry in self._get_entries(n_letters):
+                if re.fullmatch(wzor, entry.name):
+                    lista.append(entry)
+            if Server.n_max_returned_entries < len(lista):
+                raise TooManyProductsFoundError
+            else:
+                return sorted(lista, reverse=False, key=lambda x: x.price)
         else:
-            return sorted(lista, reverse=False, key=lambda x: x.price)
+            raise ValueError
 
     @abstractmethod  # tutaj wymuszamy implementację tej metody w klasach pochodnych
     def _get_entries(self, n_letters: int):
         raise NotImplementedError
+
 
 # FIXME: Każda z poniższych klas serwerów powinna posiadać:
 #   (1) metodę inicjalizacyjną przyjmującą listę obiektów typu `Product` i ustawiającą atrybut `products`\
@@ -105,3 +112,4 @@ class Client:
         except TooManyProductsFoundError:
             return 0
 
+# 3b: Nowak (407203), Malatyński (403420), Huczek (408378)
