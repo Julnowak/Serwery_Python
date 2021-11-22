@@ -1,3 +1,4 @@
+# 3b: Nowak (407203), Malatyński (...), Huczek (408378)
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
@@ -7,9 +8,13 @@ import re
 
 
 class Product:
-    def __init__(self, name: str, price: float):
-        self.name: str = name
-        self.price: float = price
+    def __init__(self, name: str, price: float) -> None:
+        pat = f'^[a-zA-Z]+[0-9]+$'
+        if price > 0 and re.fullmatch(pat, name):
+            self.name: str = name
+            self.price: float = price
+        else:
+            raise ValueError
 
     # FIXME: klasa powinna posiadać metodę inicjalizacyjną przyjmującą argumenty wyrażające nazwę produktu\
     #  (typu str) i\ jego cenę (typu float) -- w takiej kolejności -- i ustawiającą atrybuty `name` (typu str)\
@@ -23,17 +28,17 @@ class Product:
 
 
 class TooManyProductsFoundError(Exception):
-    """Reprezentuje wyjątek związany ze znalezieniem zbyt dużej liczby produktów."""
+    """Znaleziono zbyt dużą liczbę produktów"""
     pass
 
 
 class Server(ABC):
     n_max_returned_entries: int = 10
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
-    def get_entries(self, n_letters: int):
+    def get_entries(self, n_letters: int = 1):
         lista = []
         wzor = f'^[a-zA-Z]{{{n_letters}}}\\d{{2,3}}$'
         for entry in self._get_entries(n_letters):
@@ -57,7 +62,7 @@ class Server(ABC):
 #   kryterium wyszukiwania
 
 
-OurServerType = TypeVar('OurServerType', bound=Server)  # HelperType for our serwer
+OurServerType = TypeVar('OurServerType', bound=Server)  # HelperType for our server
 
 
 class ListServer(Server):
@@ -66,7 +71,7 @@ class ListServer(Server):
         super().__init__()
         self.products: List[Product] = products
 
-    def _get_entries(self, n_letters: int) -> List[Product]:
+    def _get_entries(self, n_letters: int = 1) -> List[Product]:
         return self.products
 
 
@@ -79,13 +84,13 @@ class MapServer(Server):
             d[product.name] = product
         self.products: Dict[str, Product] = d
 
-    def _get_entries(self, n_letters: int) -> List[Product]:
+    def _get_entries(self, n_letters: int = 1) -> List[Product]:
         return list(self.products.values())
 
 
 class Client:
     # FIXME: klasa powinna posiadać metodę inicjalizacyjną przyjmującą obiekt reprezentujący serwer
-    def __init__(self, serwer: OurServerType):
+    def __init__(self, serwer: OurServerType) -> None:
         self.serwer: OurServerType = serwer
 
     def get_total_price(self, n_letters: Optional[int]) -> Optional[float]:
@@ -99,3 +104,4 @@ class Client:
             return suma
         except TooManyProductsFoundError:
             return 0
+
