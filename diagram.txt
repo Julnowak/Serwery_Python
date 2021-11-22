@@ -1,5 +1,4 @@
-Grupa 3b: Huczek (408378), Nowak (407203), Malatyński (...)
-
+Grupa 3b: Huczek < 408378 >, Nowak < 407203 >, Malatyński, <  >
 @startuml
 hide empty members
 class Product {
@@ -10,11 +9,11 @@ class Product {
     +__hash__(self):
 }
 
-Product "*" *-- "1" ListServer
-Product "*" *-- "1" MapServer
+Product "*" --* "1" ListServer
+Product "*" --* "1" MapServer
 
-' ListServer "1" --* "*" Product
-' MapServer "1" --* "*" Product
+' ListServer "1" *-- "*" Product
+' MapServer "1" *-- "*" Product
 
 Product .> ValueError: "<< throws >>"
 
@@ -45,10 +44,18 @@ class Client {
     + serwer: OurServerType
     + get_total_price(self, n_letters: Optional[int]): Optional[float]
 }
+class ServerError{
 
+}
+class TooManyProductsFoundError{
 
+}
+
+TooManyProductsFoundError --|> ServerError
 
 Server .> TooManyProductsFoundError: "<< throws >>"
+Server .> ValueError: "<< throws >>"
 
-Client --o Server
+
+Server --o Client
 @enduml
