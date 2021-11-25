@@ -10,7 +10,7 @@ import re
 class Product:
     def __init__(self, name: str, price: float) -> None:
         pat = f'^[a-zA-Z]+[0-9]+$'
-        if price > 0 and re.fullmatch(pat, name):
+        if price >= 0 and re.fullmatch(pat, name):
             self.name: str = name
             self.price: float = price
         else:
@@ -36,7 +36,7 @@ class TooManyProductsFoundError(ServerError):
 
 
 class Server(ABC):
-    n_max_returned_entries: int = 10
+    n_max_returned_entries: int = 3
 
     def __init__(self) -> None:
         super().__init__()
@@ -106,10 +106,12 @@ class Client:
             if n_letters is None:
                 n_letters = 1
             entries = self.serwer.get_entries(n_letters)
+            if not entries:
+                return None
             for entry in entries:
                 suma += entry.price
             return suma
         except TooManyProductsFoundError:
-            return 0
+            return None
 
 # 3b: Nowak (407203), Malatyński (403420), Huczek (408378)
