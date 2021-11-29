@@ -2,7 +2,7 @@
 import unittest
 from collections import Counter
 
-from servers_skeleton import *
+from servers import *
 
 server_types = (ListServer, MapServer)
 
@@ -46,7 +46,7 @@ class ClientTest(unittest.TestCase):
         for server_type in server_types:
             server = server_type(products)
             client = Client(server)
-            self.assertEqual(0, client.get_total_price(1))
+            self.assertEqual(None, client.get_total_price(1))
 
 
 if __name__ == '__main__':
