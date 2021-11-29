@@ -10,7 +10,7 @@ import re
 class Product:
     def __init__(self, name: str, price: float) -> None:
         pat = f'^[a-zA-Z]+[0-9]+$'
-        if price >= 0 and re.fullmatch(pat, name):
+        if re.fullmatch(pat, name):
             self.name: str = name
             self.price: float = price
         else:
